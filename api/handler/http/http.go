@@ -28,18 +28,18 @@ type httpHandler struct {
 func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	service, err := h.getService(r)
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	if len(service) == 0 {
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
 	rp, err := url.Parse(service)
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 

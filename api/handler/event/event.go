@@ -111,7 +111,7 @@ func (e *event) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		buf := bufferPool.Get()
 		defer bufferPool.Put(buf)
 		if _, err := buf.ReadFrom(r.Body); err != nil {
-			http.Error(w, err.Error(), 500)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		ev.Data = buf.String()
@@ -125,7 +125,7 @@ func (e *event) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// publish event
 	if err := c.Publish(ctx.FromRequest(r), p); err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }

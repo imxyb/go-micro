@@ -29,7 +29,7 @@ type webHandler struct {
 func (wh *webHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	service, err := wh.getService(r)
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -40,7 +40,7 @@ func (wh *webHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	rp, err := url.Parse(service)
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
@@ -92,7 +92,7 @@ func (wh *webHandler) serveWebSocket(host string, w http.ResponseWriter, r *http
 	*req = *r
 
 	if len(host) == 0 {
-		http.Error(w, "invalid host", 500)
+		http.Error(w, "invalid host", http.StatusInternalServerError)
 		return
 	}
 
@@ -107,14 +107,14 @@ func (wh *webHandler) serveWebSocket(host string, w http.ResponseWriter, r *http
 	// connect to the backend host
 	conn, err := net.Dial("tcp", host)
 	if err != nil {
-		http.Error(w, err.Error(), 500)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// hijack the connection
 	hj, ok := w.(http.Hijacker)
 	if !ok {
-		http.Error(w, "failed to connect", 500)
+		http.Error(w, "failed to connect", http.StatusInternalServerError)
 		return
 	}
 

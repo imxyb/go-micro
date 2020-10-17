@@ -34,7 +34,7 @@ func (a *apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		er := errors.InternalServerError("go.micro.api", err.Error())
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(er.Error()))
 		return
 	}
@@ -50,7 +50,7 @@ func (a *apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			er := errors.InternalServerError("go.micro.api", err.Error())
 			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(500)
+			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(er.Error()))
 			return
 		}
@@ -59,7 +59,7 @@ func (a *apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		// we have no way of routing the request
 		er := errors.InternalServerError("go.micro.api", "no route found")
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(er.Error()))
 		return
 	}
@@ -77,7 +77,7 @@ func (a *apiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		ce := errors.Parse(err.Error())
 		switch ce.Code {
 		case 0:
-			w.WriteHeader(500)
+			w.WriteHeader(http.StatusInternalServerError)
 		default:
 			w.WriteHeader(int(ce.Code))
 		}
